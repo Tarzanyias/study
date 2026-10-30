@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vera Proxy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Great+Vibes&family=Playfair+Display:ital,wght@1,400&display=swap');
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#080810;overflow:hidden;font-family:'Inter',system-ui,sans-serif}
+
+#frame{position:fixed;inset:0;border:0;width:100%;height:100%;display:block;background:#080810}
+
+/* ---- "Vera" wordmark drawn over Opium's, in Opium's own style ---- */
+#mark{position:fixed;pointer-events:none;display:flex;align-items:center;justify-content:center;
+      background:#080810;box-shadow:0 0 18px 14px #080810;border-radius:30px;
+      opacity:0;transition:opacity .4s ease}
+#mark.on{opacity:1}
+#mark span{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;letter-spacing:-.01em;
+           line-height:1;padding:.08em .12em .18em;user-select:none;
+           background:linear-gradient(135deg,#ffffff 30%,#c4b5fd 130%);
+           -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---- Loading screen ---- */
+#loader{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+        gap:22px;background:#0b0f0e;transition:opacity .7s ease,visibility .7s}
+#loader.done{opacity:0;visibility:hidden}
+#loader .logo{font-family:'Great Vibes',cursive;font-size:clamp(56px,8vw,84px);color:#f4f7f5;line-height:1;
+              text-shadow:0 2px 20px rgba(0,0,0,.55),0 0 40px rgba(138,180,154,.25)}
+#loader .track{width:min(320px,70vw);height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+#loader .fill{height:100%;width:0;border-radius:4px;background:#8ab49a;box-shadow:0 0 12px rgba(138,180,154,.6);
+              transition:width .25s ease}
+#loader .pct{font-size:12px;letter-spacing:1.5px;color:#9ba5a0;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<iframe id="frame" title="Proxy" allow="fullscreen; clipboard-read; clipboard-write; autoplay"></iframe>
+<div id="mark"><span>Vera</span></div>
+
+<div id="loader">
+  <div class="logo">Vera</div>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <div class="pct" id="pct">0%</div>
+</div>
+
+<script>
+/* ===================== SETTINGS ===================== */
+const PROXY_URL = "https://cdn.jsdelivr.net/npm/opiumbest/index.svg";
+const NAME = "Vera";
+// Nudge the logo if it's ever a few pixels off (positive = down / right)
+const NUDGE_X = 0, NUDGE_Y = 0;
+/* ==================================================== */
+
+const frame = document.getElementById("frame");
+const mark = document.getElementById("mark");
+const loader = document.getElementById("loader");
+const fill = document.getElementById("fill"), pct = document.getElementById("pct");
+mark.firstElementChild.textContent = NAME;
+
+/* ---------- Place "Vera" exactly where Opium draws its wordmark ----------
+   Opium's wordmark: Playfair Display italic, font-size clamp(64px, 11vw, 100px),
+   centered horizontally; the home content is centered vertically in the window. */
+function clamp(min, v, max){ return Math.max(min, Math.min(v, max)); }
+function place(){
+  const W = innerWidth, H = innerHeight;
+  const f = clamp(64, W * 0.11, 100);                 // wordmark font size
+  const gap = clamp(10, W * 0.016, 16);               // its bottom margin
+  const block = 441 - 1.339 * (100 - f) - (16 - gap); // height of Opium's centered home content
+  const cy = (H - block) / 2 + 0.67 * f + NUDGE_Y;    // middle of the "opium" letters
+  const cx = W / 2 + NUDGE_X;
+  const w = f * 3.0, h = f * 1.25;
+  Object.assign(mark.style, { left: (cx - w / 2) + "px", top: (cy - h / 2) + "px", width: w + "px", height: h + "px" });
+  mark.firstElementChild.style.fontSize = f + "px";
+}
+addEventListener("resize", place);
+place();
+
+/* ---------- Loading bar ----------
+   The page can't see inside Opium, so the bar eases toward 90% while it loads,
+   then finishes once Opium has loaded and settled (it reloads itself once
+   after registering its service worker). */
+let progress = 0, finished = false, settleTimer = null;
+const started = performance.now();
+function setProgress(p){ progress = p; fill.style.width = p + "%"; pct.textContent = Math.round(p) + "%"; }
+(function tick(){
+  if (finished) return;
+  const t = (performance.now() - started) / 1000;
+  setProgress(Math.max(progress, 90 * (1 - Math.exp(-t / 1.6))));
+  requestAnimationFrame(tick);
+})();
+
+function finish(){
+  if (finished) return;
+  finished = true;
+  setProgress(100);
+  setTimeout(() => {
+    loader.classList.add("done");
+    mark.classList.add("on");
+  }, 350);
+}
+
+/* ---------- Opium loads ---------- */
+let loads = 0, startupOver = false;
+frame.addEventListener("load", () => {
+  loads++;
+  if (!startupOver){
+    // during start-up, wait for things to settle before revealing
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(() => { startupOver = true; finish(); }, 1600);
+  } else {
+    // a load after start-up means a website was opened, so the logo isn't showing
+    mark.classList.remove("on");
+  }
+});
+// safety: never leave the loading screen up forever
+setTimeout(() => { startupOver = true; finish(); }, 15000);
+
+frame.src = PROXY_URL;
+</script>
+</body>
+</html>
