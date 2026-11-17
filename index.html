@@ -116,23 +116,25 @@ const ICON={
   soc:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c-2.5 2.6-3.7 5.6-3.7 9s1.2 6.4 3.7 9c2.5-2.6 3.7-5.600 3.7-9S14.5 5.6 12 3z"/></svg>'
 };
 const SUBJECTS=[
- {id:"science",name:"Science",color:"var(--sci)",icon:"sci",blurb:"Body systems and classification of living things.",
+ {id:"science",name:"Science",color:"var(--sci)",icon:"sci",blurb:"One quiz for each body system.",
   cats:[
    {name:"Body Systems",sub:"From your My Body notes",quizzes:[
-     {id:"body-1",file:"body-systems-1-quiz.html",key:"body-a-mastery",n:29,title:"Skeletal, Muscular, Circulatory & Respiratory",desc:"Organs, jobs, memory phrases and how these four systems work together.",topics:["Skeletal","Muscular","Circulatory","Respiratory"]},
-     {id:"body-2",file:"body-systems-2-quiz.html",key:"body-b-mastery",n:30,title:"Digestive, Urinary & Nervous",desc:"Food path, kidneys and waste, signals, plus the labeled nerve cell.",topics:["Digestive","Urinary","Nervous"]},
-     {id:"body-3",file:"body-systems-3-quiz.html",key:"body-c-mastery",n:24,title:"Integumentary, Immune & Endocrine",desc:"Skin layers, pathogens and white blood cells, hormones and glands.",topics:["Integumentary","Immune","Endocrine"]}]},
-   {name:"Classification",sub:"Sorting living things",quizzes:[
-     {id:"classification",file:"classification-review-quiz.html",key:"classification-review-mastery",n:35,title:"Classification of Organisms",desc:"The taxonomy levels, the three domains, kingdoms, and cell types.",topics:["Taxonomy","Domains","Kingdoms","Cells"]}]}
+     {id:"skeletal",file:"skeletal-system-quiz.html",key:"body-skeletal-mastery",n:8,title:"Skeletal System",desc:"Bones, ligaments and cartilage, and what the skeleton does.",topics:["Bones", "Ligaments", "Cartilage"]},
+     {id:"muscular",file:"muscular-system-quiz.html",key:"body-muscular-mastery",n:7,title:"Muscular System",desc:"The three muscle types and how muscles move your bones.",topics:["Muscle types", "Movement", "Diaphragm"]},
+     {id:"circulatory",file:"circulatory-system-quiz.html",key:"body-circulatory-mastery",n:8,title:"Circulatory System",desc:"Heart, vessels and blood, and what blood carries.",topics:["Heart", "Vessels", "Blood"]},
+     {id:"respiratory",file:"respiratory-system-quiz.html",key:"body-respiratory-mastery",n:6,title:"Respiratory System",desc:"Lungs, the diaphragm, and the oxygen and carbon dioxide swap.",topics:["Lungs", "Diaphragm", "Gas exchange"]},
+     {id:"digestive",file:"digestive-system-quiz.html",key:"body-digestive-mastery",n:8,title:"Digestive System",desc:"The path of food from esophagus to large intestine.",topics:["Stomach", "Small intestine", "Large intestine"]},
+     {id:"urinary",file:"urinary-system-quiz.html",key:"body-urinary-mastery",n:10,title:"Urinary System",desc:"Kidneys, ureters, bladder and urethra, and keeping blood balanced.",topics:["Kidneys", "Bladder", "Homeostasis"]},
+     {id:"nervous",file:"nervous-system-quiz.html",key:"body-nervous-mastery",n:12,title:"Nervous System",desc:"Signals, input and output, and the labeled nerve cell.",topics:["Signals", "Nerve cell", "Brain"]},
+     {id:"integumentary",file:"integumentary-system-quiz.html",key:"body-integumentary-mastery",n:11,title:"Integumentary System",desc:"Skin layers and what each part of the skin does.",topics:["Skin", "Hair", "Glands"]},
+     {id:"immune",file:"immune-system-quiz.html",key:"body-immune-mastery",n:8,title:"Immune System",desc:"Pathogens, white blood cells and fighting infection.",topics:["Pathogens", "White blood cells"]},
+     {id:"endocrine",file:"endocrine-system-quiz.html",key:"body-endocrine-mastery",n:8,title:"Endocrine System",desc:"Hormones, glands, and fight or flight.",topics:["Hormones", "Glands"]}
+   ]}
   ]},
  {id:"social-studies",name:"Social Studies",color:"var(--soc)",icon:"soc",blurb:"Maps, history and geography.",
   cats:[
    {name:"Maps",sub:"Map warm-ups",quizzes:[
-     {id:"europe-map",file:"europe-map-warmup-quiz.html",key:"europe-map-mastery",n:10,title:"Europe Map Warm-Up",desc:"Match the letters on the map of Europe to the five bodies of water.",topics:["Atlantic Ocean","Baltic Sea","Black Sea","Mediterranean Sea","North Sea"]}]},
-   {name:"Europe",sub:"History",quizzes:[
-     {id:"history-europe",file:"history-of-europe-quiz.html",key:"history-of-europe-mastery",n:47,title:"History of Europe Review",desc:"Ancient Greece and Rome, the Middle Ages, the Renaissance and beyond.",topics:["Greece","Rome","Middle Ages","Renaissance"]}]},
-   {name:"Latin America",sub:"Unit 3",quizzes:[
-     {id:"unit3",file:"unit3-review-quiz.html",key:"unit3-review-mastery",n:26,title:"Social Studies Unit 3 Review",desc:"Latin America vocabulary, geography and a map-locations question set.",topics:["Latin America","Map skills","Vocabulary"]}]}
+     {id:"europe-map",file:"europe-map-warmup-quiz.html",key:"europe-map-mastery",n:10,title:"Europe Map Warm-Up",desc:"Match the letters on the map of Europe to the five bodies of water.",topics:["Atlantic Ocean","Baltic Sea","Black Sea","Mediterranean Sea","North Sea"]}]}
   ]}
 ];
 const $=s=>document.querySelector(s), app=$("#app");
