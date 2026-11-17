@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opener</title>
+<style>
+  :root{--bg:#131314;--surface:#1b1c1d;--surface2:#282a2c;--border:#3c4043;--text:#e3e3e3;--muted:#a8abb0;--accent:#a8c7fa;--ink:#062e6f;--ok:#81c995;--ease:cubic-bezier(.2,.8,.2,1)}
+  @media (prefers-color-scheme:light){:root{--bg:#f0f4f9;--surface:#fff;--surface2:#e9eef6;--border:#dadce0;--text:#1f1f1f;--muted:#5f6368;--accent:#0b57d0;--ink:#fff;--ok:#188038}}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100dvh}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:clamp(22px,4vw,28px);font-weight:500;margin:0 0 4px;letter-spacing:-.2px}
+  .lead{color:var(--muted);margin:0 0 22px}
+  .drop{display:block;border:2px dashed var(--border);border-radius:28px;padding:clamp(28px,7vw,54px) 20px;text-align:center;background:var(--surface);cursor:pointer;transition:border-color .25s,background .25s,transform .25s var(--ease)}
+  .drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface));transform:scale(1.01)}
+  .drop:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .drop svg{width:44px;height:44px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px}
+  .drop b{display:block;font-size:20px;font-weight:500;margin-bottom:4px}
+  .drop span{color:var(--muted);font-size:14px}
+  .or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:18px 0}
+  .or::before,.or::after{content:"";height:1px;background:var(--border);flex:1}
+  textarea{width:100%;min-height:110px;resize:vertical;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:14px 16px;font:14px/1.5 ui-monospace,Consolas,monospace;outline:none}
+  textarea:focus{border-color:var(--accent)}
+  .btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;background:var(--accent);color:var(--ink);font-weight:500;font-size:15px;transition:transform .15s var(--ease),filter .2s,background .25s}
+  .btn:hover{filter:brightness(1.08)} .btn:active{transform:scale(.95)} .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn.ghost{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--border)}
+  .btn.ok{background:var(--ok);color:#06280f}
+  .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .list{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+  .item{background:var(--surface);border-radius:22px;box-shadow:inset 0 0 0 1px var(--border);padding:16px 18px;animation:in .4s var(--ease) both}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .head b{font-weight:500;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);white-space:nowrap}
+  .tag.warn{background:color-mix(in srgb,#fdd663 18%,transparent);color:#c58a00}
+  small{color:var(--muted);font-size:12px;white-space:nowrap}
+  .url{width:100%;border-radius:99px;border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:11px 16px;font:13px ui-monospace,Consolas,monospace;outline:none;margin-bottom:10px}
+  .row{display:flex;flex-wrap:wrap;gap:8px}
+  .note{color:var(--muted);font-size:13px;margin:22px 0 0;max-width:62ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="display:inline-block;margin-bottom:14px;color:var(--accent);text-decoration:none;font-size:14px">&larr; Back to quizzes</a>
+  <h1>Opener</h1>
+  <p class="lead">Upload any file. If it has HTML inside, even a .txt, you get a blob link to copy or open in a new tab.</p>
+  <label class="drop" id="drop" tabindex="0">
+    <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    <b>Drop files here</b><span>or tap to choose. Any file type works.</span>
+    <input id="pick" type="file" multiple hidden>
+  </label>
+  <div class="or">or paste text or HTML</div>
+  <textarea id="paste" placeholder="Paste text or HTML here" spellcheck="false"></textarea>
+  <div style="margin-top:12px"><button class="btn" id="mk">Make link</button></div>
+  <div class="list" id="list"></div>
+  <p class="note">Links are made in this browser and work here until you reload or close this tab. Nothing is uploaded.</p>
+</div>
+<script>
+(function(){
+  var items=[], list=document.getElementById("list");
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function fmt(n){return n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(1)+" MB"}
+  // Find HTML inside any text. Returns the HTML slice or null.
+  function findHtml(t){
+    var m=/<!doctype\s+html[\s>]/i.exec(t)||/<html[\s>]/i.exec(t);
+    if(m){
+      var start=m.index, endM=null, re=/<\/html\s*>/ig, x;
+      while((x=re.exec(t))) endM=x;
+      return t.slice(start, endM?endM.index+endM[0].length:t.length);
+    }
+    if(/<\s*(head|body|div|span|p|h[1-6]|a|img|table|ul|ol|li|script|style|svg|button|form|section|main|header|footer|nav)\b[^>]*>/i.test(t)) return t;
+    return null;
+  }
+  function decode(buf){
+    try{return new TextDecoder("utf-8",{fatal:true}).decode(buf)}catch(e){}
+    try{return new TextDecoder("utf-8").decode(buf)}catch(e){}
+    return "";
+  }
+  function addItem(buf,name,origType,size){
+    var kind="File", blob, text="";
+    try{ text=decode(buf) }catch(e){}
+    var html=null; try{ html=text?findHtml(text):null }catch(e){}
+    if(html!==null){ kind="HTML"; blob=new Blob([html],{type:"text/html;charset=utf-8"}) }
+    else if(text && text.indexOf("\u0000")<0){ kind="Text"; blob=new Blob([text],{type:"text/plain;charset=utf-8"}) }
+    else { blob=new Blob([buf],{type:origType||"application/octet-stream"}) }
+    var url=""; try{ url=URL.createObjectURL(blob) }catch(e){}
+    items.unshift({name:name,kind:kind,url:url,size:blob.size}); render();
+  }
+  function readFile(f){
+    function done(buf){ try{addItem(buf,f.name||"file",f.type,f.size)}catch(e){items.unshift({name:f.name||"file",kind:"File",url:"",size:0,err:1});render()} }
+    try{
+      if(f.arrayBuffer) f.arrayBuffer().then(done,function(){done(new ArrayBuffer(0))});
+      else{var r=new FileReader(); r.onload=function(){done(r.result)}; r.onerror=function(){done(new ArrayBuffer(0))}; r.readAsArrayBuffer(f)}
+    }catch(e){done(new ArrayBuffer(0))}
+  }
+  function copyText(t){
+    function fb(){var a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove()}
+    try{ if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(t).catch(function(){fb()}) }catch(e){}
+    fb(); return Promise.resolve();
+  }
+  function render(){
+    list.innerHTML=items.map(function(it,i){
+      if(it.err||!it.url) return '<div class="item"><div class="head"><b>'+esc(it.name)+'</b></div><small style="white-space:normal">Could not make a link for this one. Try it again.</small></div>';
+      return '<div class="item"><div class="head"><b title="'+esc(it.name)+'">'+esc(it.name)+'</b><span class="tag'+(it.kind==="File"?" warn":"")+'">'+(it.kind==="HTML"?"HTML found":it.kind==="Text"?"Text, no HTML":"Other file")+'</span><small>'+fmt(it.size)+'</small></div>'+
+      '<input class="url" readonly value="'+it.url+'" aria-label="Blob URL" onfocus="this.select()">'+
+      '<div class="row"><button class="btn" data-copy="'+i+'"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Copy</span></button>'+
+      '<a class="btn ghost" href="'+it.url+'" target="_blank" rel="noopener">Open in new tab</a>'+
+      '<button class="btn ghost" data-rm="'+i+'">Remove</button></div></div>';
+    }).join("");
+  }
+  list.addEventListener("click",function(e){
+    var c=e.target.closest("[data-copy]");
+    if(c){ var it=items[+c.getAttribute("data-copy")]; copyText(it.url).then(function(){var s=c.querySelector("span");c.classList.add("ok");s.textContent="Copied";setTimeout(function(){c.classList.remove("ok");s.textContent="Copy"},1600)}); return }
+    var r=e.target.closest("[data-rm]");
+    if(r){ var rm=items.splice(+r.getAttribute("data-rm"),1)[0]; try{URL.revokeObjectURL(rm.url)}catch(_){} render() }
+  });
+  var drop=document.getElementById("drop"), pick=document.getElementById("pick");
+  function take(fl){ for(var i=0;i<fl.length;i++) readFile(fl[i]) }
+  pick.addEventListener("change",function(){take(pick.files);pick.value=""});
+  ["dragenter","dragover"].forEach(function(n){drop.addEventListener(n,function(e){e.preventDefault();drop.classList.add("over")})});
+  ["dragleave","drop"].forEach(function(n){drop.addEventListener(n,function(e){e.preventDefault();drop.classList.remove("over")})});
+  drop.addEventListener("drop",function(e){ if(e.dataTransfer&&e.dataTransfer.files) take(e.dataTransfer.files) });
+  drop.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();pick.click()} });
+  window.addEventListener("dragover",function(e){e.preventDefault()});
+  window.addEventListener("drop",function(e){ e.preventDefault(); if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length&&!drop.contains(e.target)) take(e.dataTransfer.files) });
+  document.getElementById("mk").addEventListener("click",function(){
+    var ta=document.getElementById("paste"), v=ta.value; if(!v.trim()) return;
+    var enc=new TextEncoder().encode(v); addItem(enc.buffer,"pasted",""+"",enc.length); ta.value="";
+  });
+})();
+</script>
+</body>
+</html>
